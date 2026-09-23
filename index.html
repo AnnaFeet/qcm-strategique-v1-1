@@ -1,0 +1,88 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QCM stratégique V1.1</title><link href="https://unpkg.com/survey-core/defaultV2.min.css" rel="stylesheet"><style>body{margin:0;background:#f6f7f9;font-family:Arial,sans-serif}.top{max-width:1000px;margin:22px auto 0;padding:0 18px}.badge{font-size:13px;color:#555}.adult{background:#fff3cd;border:1px solid #e5c66b;padding:12px 14px;border-radius:8px;margin:12px 0}.diag{display:none;background:#fff;margin:18px auto;padding:18px;max-width:960px;border-radius:10px;white-space:pre-wrap}button{padding:10px 14px}</style></head><body><div class="top"><div class="badge">MODULE 01 — QCM & PROFIL STRATÉGIQUE — V1.1 TESTABLE</div><div class="adult">Questionnaire réservé aux personnes adultes. Les réponses restent dans ce navigateur et peuvent être exportées en JSON.</div></div><div id="survey"></div><div id="diag" class="diag"></div><script src="https://unpkg.com/survey-core/survey.core.min.js"></script><script src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script><script>
+const S=["CURRENT","LATER","NEVER","UNKNOWN"], SC=["Maintenant","Plus tard","Jamais","Je ne sais pas"];
+const ch=(n,t,a,extra={})=>({type:"radiogroup",name:n,title:t,choices:a,...extra});
+const multi=(n,t,a,extra={})=>({type:"checkbox",name:n,title:t,choices:a,...extra});
+const matrix=(n,t,rows)=>({type:"matrix",name:n,title:t,columns:S.map((v,i)=>({value:v,text:SC[i]})),rows:rows.map(x=>({value:x,text:x})),isAllRowRequired:false});
+const pages=[
+{name:"b1",title:"1 — Visibilité & identité",elements:[
+ch("Q01","Q01 — Montrer ton visage ?",S.map((v,i)=>({value:v,text:SC[i]}))),
+multi("Q02","Q02 — Niveau de visibilité du visage",["Entièrement visible","Partiellement visible","Certains angles seulement","Yeux visibles","Bouche visible","Visage masqué","Visage transformé ou fortement maquillé","Dépendrait du contenu","Je ne sais pas"],{visibleIf:"{Q01} = 'CURRENT' or {Q01} = 'LATER'"}),
+matrix("Q03","Q03 — Éléments permettant une reconnaissance",["Voix naturelle","Cheveux naturels","Tatouages reconnaissables","Piercings reconnaissables","Marques corporelles distinctives","Intérieur du domicile reconnaissable","Lieux extérieurs reconnaissables","Ville/région","Prénom réel","Réseaux sociaux personnels"]),
+ch("Q04","Q04 — Importance de l’anonymat",[{value:1,text:"1 — Aucune importance"},{value:2,text:"2"},{value:3,text:"3"},{value:4,text:"4"},{value:5,text:"5 — Absolument indispensable"}]),
+multi("Q05","Q05 — Pourquoi l’anonymat peut-il être important ?",["Vie privée","Vie professionnelle","Famille/entourage","Sécurité","Séparer vie privée et activité","Préférence personnelle","Mystère","Anonymat comme persona","Peut-être révéler plus tard","Autre","Je ne sais pas"]),
+ch("Q06","Q06 — Identité publique",["Essentiellement moi-même","Version plus affirmée de moi-même","Mélange réel/persona","Personnage clairement différent","Identité totalement fictive","Je ne sais pas"]) ]},
+{name:"b2",title:"2 — Apparence & caractéristiques physiques",elements:[
+{type:"text",name:"Q07",title:"Q07 — Âge réel",inputType:"number",min:18,isRequired:true},
+{type:"multipletext",name:"Q08",title:"Q08 — Données physiques (uniquement ce que tu connais/souhaites renseigner)",items:["Taille (cm)","Poids (kg)","Taille vêtements","Pointure","Tour poitrine/torse","Bonnet si pertinent","Tour taille","Tour hanches","Tour fesses","Autre mesure pertinente"].map(x=>({name:x,title:x}))},
+multi("Q09","Q09 — Morphologie auto-décrite",["Mince","Élancée","Athlétique","Musclée","Moyenne","Pulpeuse / curvy","Forte / BBW","Petite","Grande","Autre","Je préfère ne pas utiliser de catégorie"]),
+multi("Q10","Q10 — Particularités visibles",["Tatouages","Piercings","Cicatrices visibles","Taches de naissance","Modifications corporelles","Cheveux distinctifs","Autre caractéristique visible","Aucune","Préfère ne pas répondre"]),
+matrix("Q11","Q11 — Zones corporelles acceptées à montrer",["Visage","Cheveux","Cou/épaules","Poitrine/torse","Ventre/taille","Dos","Hanches","Fesses","Jambes","Pieds","Mains","Organes génitaux","Région anale","Tatouages/piercings","Autre zone importante"]),
+multi("Q12","Q12 — Zones que tu aimerais particulièrement mettre en avant",["Visage","Cheveux","Cou/épaules","Poitrine/torse","Ventre/taille","Dos","Hanches","Fesses","Jambes","Pieds","Mains","Organes génitaux","Région anale","Tatouages/piercings","Aucune préférence","Je ne sais pas"]),
+ch("Q13","Q13 — Importance de l’apparence dans l’identité publique",[{value:1,text:"1 — Peu souhaitée"},{value:2,text:"2"},{value:3,text:"3"},{value:4,text:"4"},{value:5,text:"5 — Pleinement assumée"}])]},
+{name:"b3",title:"3 — Personnalité, style & persona",elements:[
+multi("Q14","Q14 — Tempérament (5 maximum)",["Réservé","Calme","Doux","Sensuel","Élégant","Spontané","Joueur","Drôle","Provocateur","Direct","Autoritaire","Protecteur","Mystérieux","Extraverti","Créatif","Intellectuel","Énergique","Autre"],{maxSelectedChoices:5}),
+ch("Q15","Q15 — Aisance face caméra",["Très mal à l’aise","Plutôt mal à l’aise","Neutre","Assez naturel","Très naturel","Jamais testé"]),
+ch("Q16","Q16 — Jouer un personnage",["J’aime déjà","J’aimerais essayer","Possible / neutre","Peu attirant","Je ne veux pas","Je ne sais pas"]),
+ch("Q17","Q17 — Improvisation caméra/micro",["Très difficile","Plutôt difficile","Faisable","Assez naturel","Très naturel","Jamais testé"]),
+multi("Q18","Q18 — Univers esthétiques (5 maximum)",["Naturel/authentique","Élégant/chic","Glamour","Luxe","Romantique/intime","Artistique/cinématographique","Mystérieux/sombre","Dominant/autoritaire","Doux/rassurant","Joueur","Humoristique","Sportif","Geek/gaming","Cosplay/personnage","Vintage/rétro","Minimaliste","Provocateur","Autre","Aucun"],{maxSelectedChoices:5}),
+matrix("Q19","Q19 — Transformations d’apparence",["Maquillage marqué","Perruques","Costumes","Cosplay","Lingerie/tenues spécifiques","Accessoires","Masques","Changement de style important"])]},
+{name:"b4",title:"4 — Voix, langues & expression",elements:[
+ch("Q20","Q20 — Utiliser ta voix ?",S.map((v,i)=>({value:v,text:SC[i]}))),
+ch("Q21","Q21 — Aisance à parler en enregistrement",["Très mal à l’aise","Plutôt mal à l’aise","Neutre","Assez naturel","Très naturel","Jamais testé"],{visibleIf:"{Q20} != 'NEVER'"}),
+multi("Q22","Q22 — Modes d’expression",["Conversation naturelle","Narration","Storytelling","Improvisation","Humour","Personnage","Parole douce/chuchotement","Expression sensuelle","Donner des instructions","Expression autoritaire","Expression explicitement sexuelle","Aucun","Je ne sais pas"],{visibleIf:"{Q20} != 'NEVER'"}),
+{type:"comment",name:"Q23",title:"Q23 — Langues : indique langue, niveau, aisance naturelle et aisance caméra/micro"},
+ch("Q24","Q24 — Voix, accent ou façon de parler distinctive ?",["Oui","Peut-être","Non","Je ne sais pas"],{visibleIf:"{Q20} != 'NEVER'"})]},
+{name:"b5",title:"5 — Exposition, explicité & limites",elements:[
+matrix("Q25","Q25 — Niveau d’exposition",["Tenues suggestives","Lingerie/équivalent","Nudité partielle","Nudité complète","Contenu sexuellement explicite"]),
+matrix("Q26","Q26 — Configuration du contenu",["Solo","Partenaire régulier","Autre créateur adulte","Plusieurs partenaires adultes","Scénarisé / roleplay","Live suggestif","Live explicite"]),
+matrix("Q27","Q27 — Familles de contenu intime/sexuel",["Mise en valeur de parties du corps","Contenu intime solo","Accessoires intimes","Roleplay sexuel adulte","Dynamique domination/soumission","Contenu centré sur une partie du corps","Contenu centré sur vêtement/accessoire","Ambiance/scénario particulier","Autres intérêts/pratiques"]),
+{type:"comment",name:"Q28",title:"Q28 — Pour les familles envisagées : éléments précis, état (maintenant/plus tard/jamais/incertain) et préférence"},
+{type:"comment",name:"Q29",title:"Q29 — Limites ou préférences particulières à signaler (facultatif)"},
+ch("Q30","Q30 — Tes limites te semblent-elles claires ?",["Très claires","Globalement claires","Certaines à définir","Beaucoup à explorer","Je ne sais pas"]),
+ch("Q31","Q31 — Si un contenu légal et compatible avec tes limites était très demandé/mieux payé mais ne t’attirait pas personnellement ?",["Je refuserais","Je l’envisagerais seulement s’il reste clairement dans mes limites","Cela dépendrait","Je l’accepterais probablement","Je ne sais pas"])]},
+{name:"b6",title:"6 — Formats & création",elements:[
+{type:"matrix",name:"Q32",title:"Q32 — Formats",columns:[{value:"LIKE",text:"J’aimerais"},{value:"MAYBE",text:"Pourquoi pas"},{value:"NO",text:"Pas envie"},{value:"UNKNOWN",text:"Je ne sais pas"}],rows:["Photos","Vidéo très courte","Vidéo courte","Vidéo longue","Audio","Live","Stories/spontané","Séries récurrentes","Contenu scénarisé","Collaboration avec créateurs"].map(x=>({value:x,text:x}))},
+ch("Q33","Q33 — Préparation vs spontanéité",[{value:1,text:"1 — Tout préparer"},{value:2,text:"2"},{value:3,text:"3"},{value:4,text:"4"},{value:5,text:"5 — Très spontané"}]),
+ch("Q34","Q34 — Tolérance à la répétition",["Très pénible","Plutôt pénible","Acceptable","Agréable","Très facile","Je ne sais pas"]),
+ch("Q35","Q35 — Générer des idées",["Difficile","Besoin d’aide","Faisable","Naturel","Point fort","Jamais testé"]),
+{type:"comment",name:"Q36",title:"Q36 — Jusqu’à 5 centres d’intérêt personnels potentiellement intégrables"}]},
+{name:"b7",title:"7 — Relation avec le public",elements:[
+ch("Q37","Q37 — Contact direct avec le public",["Très désagréable","Contrainte","Neutre","Agréable","Motivant","Je ne sais pas"]),
+ch("Q38","Q38 — Messages privés (DM)",S.map((v,i)=>({value:v,text:SC[i]}))),
+ch("Q39","Q39 — Contenu personnalisé pour une personne",["J’aimerais","Acceptable","Occasionnellement seulement","Je préfère éviter","Jamais","Je ne sais pas"]),
+ch("Q40","Q40 — Messages/interactions personnalisés",["J’aimerais","Acceptable","Occasionnellement seulement","Je préfère éviter","Jamais","Je ne sais pas"]),
+ch("Q41","Q41 — Interaction en direct",S.map((v,i)=>({value:v,text:SC[i]}))),
+ch("Q42","Q42 — Relation idéale avec l’audience",["Petite communauté proche","Communauté moyenne avec contact régulier","Grande audience avec moins de proximité","Mélange","Aucune préférence","Je ne sais pas"]),
+{type:"matrix",name:"Q43",title:"Q43 — Frontières relationnelles",columns:[{value:"NONE",text:"Pas important"},{value:"PREFERENCE",text:"Préférence"},{value:"IMPORTANT",text:"Important"},{value:"HARD",text:"Non négociable"}],rows:["Vie sentimentale","Famille","Amis","Travail","Adresse","Localisation précise","Téléphone personnel","Réseaux privés","Identité civile","Conversations personnelles profondes","Rencontres physiques","Autre"].map(x=>({value:x,text:x}))}]},
+{name:"b8",title:"8 — Compétences & production",elements:[
+{type:"matrix",name:"Q44",title:"Q44 — Expérience",columns:["Jamais","Un peu","Régulièrement","Très à l’aise"].map(x=>({value:x,text:x})),rows:["Photo","Vidéo","Montage vidéo","Retouche photo","Audio","Live/streaming","Réseaux sociaux","Écriture/storytelling","Vente","Relation client","Organisation/planning"].map(x=>({value:x,text:x}))},
+ch("Q45","Q45 — Autonomie numérique",[{value:1,text:"Très dépendant"},{value:2,text:"Plutôt dépendant"},{value:3,text:"Moyen"},{value:4,text:"Autonome"},{value:5,text:"Très autonome"}]),
+multi("Q46","Q46 — Équipement disponible",["Smartphone adapté","Appareil photo/caméra","Ordinateur","Éclairage","Micro","Trépied/support","Espace de tournage","Logiciel/matériel de montage","Rien","Autre"]),
+ch("Q47","Q47 — Lieu privé de création",["Oui facilement","Oui avec contraintes","Occasionnellement","Non","À définir"]),
+ch("Q48","Q48 — Temps total disponible par semaine",["Moins de 3 h","3–5 h","6–10 h","11–20 h","21–30 h","Plus de 30 h","Très variable"]),
+ch("Q49","Q49 — Organisation du temps",["Sessions courtes fréquentes","Une longue session/semaine","2–3 longues sessions","Mélange","Très variable","Je ne sais pas"]),
+{type:"matrix",name:"Q50",title:"Q50 — Tâches réalisables personnellement",columns:[{value:"YES",text:"Oui"},{value:"HELP",text:"Avec aide"},{value:"NO",text:"Non"},{value:"UNKNOWN",text:"Je ne sais pas"}],rows:["Préparation","Tournage","Montage","Retouche","Publication","Interaction","Organisation fichiers","Analyse statistiques","Administratif","Apprentissage outils"].map(x=>({value:x,text:x}))},
+ch("Q51","Q51 — Prévisibilité de l’emploi du temps",["Très prévisible","Assez prévisible","Variable mais organisable","Très irrégulier","Impossible actuellement"]),
+ch("Q52","Q52 — Budget initial maximum confortable",["Aucun","1–249","250–499","500–999","1000–2499","2500+","À définir"])]},
+{name:"b9",title:"9 — Objectifs",elements:[
+multi("Q53","Q53 — Motivations (3 maximum)",["Curiosité","Créativité","Expression de soi","Exploration personnelle","Revenu complémentaire","Construire un revenu important","Potentiellement en vivre","Indépendance professionnelle","Construire une marque","Construire une communauté","Développer une entreprise","Autre"],{maxSelectedChoices:3}),
+ch("Q54","Q54 — Rôle souhaité de l’activité",["Occasionnelle","Petit complément","Complément significatif","Activité professionnelle secondaire","Potentielle activité principale","Entreprise à développer","Je ne sais pas"]),
+ch("Q55","Q55 — Objectif mensuel personnel à terme",["Pas d’objectif précis","1–499","500–999","1000–2499","2500–4999","5000–9999","10000+"]),
+ch("Q56","Q56 — Horizon pour un test sérieux",["Moins de 3 mois","3–6 mois","6–12 mois","Plus d’un an","Dépend des résultats","Je ne sais pas"]),
+multi("Q57","Q57 — Ambition future si cela fonctionne",["Garder petit/simple","Augmenter progressivement les revenus","Construire une marque","Multiplier les revenus","Déléguer","Construire une activité professionnelle importante","Je ne sais pas"]),
+multi("Q58","Q58 — Sélectionne tes 5 priorités principales",["Revenu","Vie privée","Liberté","Créativité","Temps libre","Sécurité","Plaisir","Communauté","Indépendance","Croissance","Stabilité","Anonymat"],{maxSelectedChoices:5}),
+multi("Q58_TOP2","Q58 — Parmi elles, quelles sont les 2 priorités absolues ?",["Revenu","Vie privée","Liberté","Créativité","Temps libre","Sécurité","Plaisir","Communauté","Indépendance","Croissance","Stabilité","Anonymat"],{maxSelectedChoices:2})]},
+{name:"b10",title:"10 — Évolution & validation des limites",elements:[
+ch("Q59","Q59 — Ouverture à l’évolution",["Tout à fait envisageable","Progressivement","Certains aspects seulement","Peu souhaitée","Pas souhaitée","Je ne sais pas"]),
+{type:"matrix",name:"Q60",title:"Q60 — Dimensions pouvant évoluer",columns:[{value:"EVOLVE",text:"Peut évoluer"},{value:"STABLE",text:"Doit rester stable"},{value:"UNKNOWN",text:"Je ne sais pas"}],rows:["Visibilité","Style","Persona","Formats","Nudité","Explicité","Types de contenu","Relation public","Temps","Budget","Ambition"].map(x=>({value:x,text:x}))},
+{type:"comment",name:"Q61",title:"Q61 — Parmi tes réponses « Jamais », lesquelles sont des limites définitives et non négociables ?"},
+{type:"comment",name:"Q62",title:"Q62 — Parmi les éléments incertains, lesquels voudrais-tu tester avant de décider ?"},
+{type:"comment",name:"Q63",title:"Q63 — Autre contexte important (facultatif)"}]}
+];
+const json={title:"QCM stratégique — Créateur de contenu adulte",description:"Ce questionnaire construit un profil stratégique. Une limite n’est pas une mauvaise réponse. MAINTENANT = convient aujourd’hui · PLUS TARD = envisageable mais pas actuellement · JAMAIS = ne souhaite pas envisager · JE NE SAIS PAS = pas encore décidé.",showProgressBar:"top",progressBarType:"pages",showQuestionNumbers:"off",firstPageIsStarted:true,startSurveyText:"Je confirme être majeur(e) et commencer",pages};
+const survey=new Survey.Model(json); survey.locale="fr"; survey.showPrevButton=true;
+const key="qcm-v1.1-draft", started=Date.now(); try{const d=JSON.parse(localStorage.getItem(key)||"null");if(d)survey.data=d}catch(e){}
+survey.onValueChanged.add(s=>localStorage.setItem(key,JSON.stringify(s.data)));
+survey.onComplete.add(s=>{localStorage.removeItem(key);const d=s.data;const txt=JSON.stringify(d);let unknown=(txt.match(/UNKNOWN|Je ne sais pas/g)||[]).length;let never=(txt.match(/NEVER|Jamais/g)||[]).length;let flags=[];if(d.Q04===5&&d.Q03&&d.Q03["Réseaux sociaux personnels"]==="CURRENT")flags.push("C001 : anonymat indispensable + réseaux sociaux personnels actuellement reconnaissables");if(d.Q48==="Moins de 3 h"&&["Potentielle activité principale","Entreprise à développer"].includes(d.Q54))flags.push("C003 : disponibilité faible + objectif professionnel élevé (à examiner, pas à juger)");const out={questionnaire_version:"V1.1",elapsed_minutes:Math.round((Date.now()-started)/600)/100,unknown_count:unknown,never_count:never,conflict_flags:flags,RAW_RESPONSES:d};const box=document.getElementById("diag");box.style.display="block";box.textContent="DIAGNOSTIC DE TEST\n\n"+JSON.stringify(out,null,2);const b=document.createElement("button");b.textContent="Télécharger le JSON";b.onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:"application/json"}));a.download="profil-strategique-v1.1.json";a.click()};box.prepend(b)});
+survey.render(document.getElementById("survey"));
+</script></body></html>
