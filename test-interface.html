@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QCM V1.1 — interface corrigée</title></head>
+<body>
+<p id="loading">Chargement du QCM…</p>
+<script>
+fetch('./index.html?v=' + Date.now())
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+  .then(html => {
+    html = html.replace('https://unpkg.com/survey-core/defaultV2.min.css','https://unpkg.com/survey-core/survey-core.min.css');
+    document.open();
+    document.write(html);
+    document.close();
+  })
+  .catch(err => { document.getElementById('loading').textContent = 'Erreur de chargement : ' + err.message; });
+</script>
+</body>
+</html>
